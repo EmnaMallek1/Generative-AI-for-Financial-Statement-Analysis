@@ -1,0 +1,26 @@
+# Model weights / large artifacts
+*.gguf
+*-finetuned/
+*-finetuned-lora/
+mistral-finetuned-gguf/
+*.safetensors
+*.bin
+
+# Raw OCR'd Excel exports and intermediate normalization output
+# (data/financial_dataset_qlora_cleaned_v2.json - the final labeled dataset - IS tracked)
+*.xlsx
+!sample_*.xlsx
+uniformized_samples/
+dataset_inputs.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store

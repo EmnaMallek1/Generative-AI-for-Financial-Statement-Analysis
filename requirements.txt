@@ -1,0 +1,15 @@
+# OCR
+torch
+transformers
+pillow
+pandas
+openpyxl
+
+# Data prep / fine-tuning
+unsloth
+datasets
+trl
+accelerate
+bitsandbytes
+numpy
+matplotlib
