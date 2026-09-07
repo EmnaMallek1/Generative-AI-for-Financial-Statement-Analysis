@@ -50,12 +50,6 @@ schema-consistent output than prompting alone.
 
 See [`lora_finetuning_mistral7b.ipynb`](./lora_finetuning_mistral7b.ipynb) for the full training notebook, including training curves and perplexity plots.
 
-## Results
-
-_Fill in with your actual numbers before publishing:_
-- Final eval loss: `TODO`
-- Final eval perplexity: `TODO`
-- % valid JSON outputs on held-out test set: `TODO`
 
 ## Output example
 
