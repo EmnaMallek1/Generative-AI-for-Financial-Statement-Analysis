@@ -20,14 +20,13 @@ a startup.
                                                           financial dashboard
 ```
 
-| Stage | Folder | What it does |
+| Stage | File | What it does |
 |---|---|---|
-| 1. OCR | [`1_ocr/`](./1_ocr) | Converts images of financial tables (balance sheet, income statement) into Excel files, using the [GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) vision-language model for table recognition. |
-| 2. Data normalization | [`2_data_prep/`](./2_data_prep) | Normalizes the raw OCR'd Excel files (inconsistent layouts, French labels, mixed number formats) into a single consistent schema per company/year, then builds the labeled instruction/output JSON dataset used for fine-tuning. |
+| 1. OCR | [`glm_ocr.py`](./glm_ocr.py) | Converts images of financial tables (balance sheet, income statement) into Excel files, using the [GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) vision-language model for table recognition. |
+| 2. Data normalization | [`uniformize_each_file_v2.py`](./uniformize_each_file_v2.py) | Normalizes the raw OCR'd Excel files (inconsistent layouts, French labels, mixed number formats) into a single consistent schema per company/year. |
 | — Dataset | [`data/`](./data) | The final labeled fine-tuning dataset (64 examples, 36 companies) — see [`data/README.md`](./data/README.md) for the data card. |
-| 3. Model exploration | [`3_model_experiments/`](./3_model_experiments) | Early-phase experimentation: several open-source LLMs were tested via [Ollama](https://ollama.com/), called through Postman, to evaluate raw financial-analysis quality before committing to fine-tuning. `markdown.py` cleans up the markdown-formatted responses for review. |
-| 4. Fine-tuning | [`4_fine_tuning/`](./4_fine_tuning) | LoRA fine-tuning of `unsloth/mistral-7b-instruct-v0.3-bnb-4bit` on the labeled dataset, run on Google Colab via [Unsloth](https://github.com/unslothai/unsloth). Includes training curves, perplexity, and JSON-validity evaluation. |
-| 5. Evaluation | [`5_evaluation/`](./5_evaluation) | Training/eval loss curves and results summary. |
+| 3. Model exploration | [`markdown.py`](./markdown.py) | Early-phase experimentation: several open-source LLMs were tested via [Ollama](https://ollama.com/), called through Postman, to evaluate raw financial-analysis quality before committing to fine-tuning. This script cleans up the markdown-formatted responses for review. |
+| 4. Fine-tuning | [`lora_finetuning_mistral7b.ipynb`](./lora_finetuning_mistral7b.ipynb) | LoRA fine-tuning of `unsloth/mistral-7b-instruct-v0.3-bnb-4bit` on the labeled dataset, run on Google Colab via [Unsloth](https://github.com/unslothai/unsloth). Includes training curves, perplexity, JSON-validity evaluation, and inference/dashboard rendering. |
 
 ## Why fine-tune instead of just prompting?
 
@@ -49,7 +48,7 @@ schema-consistent output than prompting alone.
 - **Training:** 5 epochs, cosine LR schedule, 8-bit AdamW, gradient checkpointing — single GPU on Google Colab
 - **Data:** 64 labeled financial-statement → analysis pairs from 36 Tunisian (BVMT-listed) companies' public financial statements — see [`data/README.md`](./data/README.md) for the full data card
 
-See [`4_fine_tuning/lora_finetuning_mistral7b.ipynb`](./4_fine_tuning/lora_finetuning_mistral7b.ipynb) for the full training notebook.
+See [`lora_finetuning_mistral7b.ipynb`](./lora_finetuning_mistral7b.ipynb) for the full training notebook, including training curves and perplexity plots.
 
 ## Results
 
@@ -58,14 +57,12 @@ _Fill in with your actual numbers before publishing:_
 - Final eval perplexity: `TODO`
 - % valid JSON outputs on held-out test set: `TODO`
 
-Training curves are saved in [`5_evaluation/`](./5_evaluation).
-
 ## Output example
 
 The fine-tuned model takes normalized financial statement data and returns
 structured JSON (ratios with ratings, overall assessment, strengths,
 weaknesses, recommendations), which is rendered into a readable dashboard —
-see the last cell of the fine-tuning notebook for the rendering code.
+see the last cells of the fine-tuning notebook for the rendering code.
 
 ## Tech stack
 
@@ -80,7 +77,7 @@ see the last cell of the fine-tuning notebook for the rendering code.
 pip install -r requirements.txt
 ```
 
-Each stage can be run independently — see the docstring at the top of each script for usage.
+Each script can be run independently — see the docstring at the top of each file for usage.
 
 ## Notes
 
